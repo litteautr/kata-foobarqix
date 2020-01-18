@@ -9,40 +9,38 @@ import static java.lang.Character.getNumericValue;
 
 public class FooBarQixConverter {
 
-    private static final Map<Integer, String> DIVISION_CONVERTER_RULES;
-    private static final Map<Integer, String> CONTAIN_CONVERTER_RULES = Map.of(3, "Foo", 5, "Bar", 7, "Qix");
+    private static final Map<Integer, String> DIVISION_RULES;
+    private static final Map<Integer, String> CONTAIN_RULES;
 
     static {
         Map<Integer, String> divisionConverterMap = new LinkedHashMap<>();
         divisionConverterMap.put(3, "Foo");
         divisionConverterMap.put(5, "Bar");
+        DIVISION_RULES = Collections.unmodifiableMap(divisionConverterMap);
 
-        DIVISION_CONVERTER_RULES = Collections.unmodifiableMap(divisionConverterMap);
+        CONTAIN_RULES = Map.of(3, "Foo", 5, "Bar", 7, "Qix");
     }
 
     public String convert(int inputNumber) {
-        StringBuilder convertedInput = new StringBuilder();
+        StringBuilder convertedInput = new StringBuilder()
+                .append(divisibleConversion(inputNumber))
+                .append(containConversion(inputNumber));
 
-        convertedInput.append(divisibleConversion(inputNumber));
-        convertedInput.append(containConversion(inputNumber));
-
-        return convertedInput.length() == 0 ? String.valueOf(inputNumber) : convertedInput.toString();
+        return String.valueOf(convertedInput.length() == 0 ? inputNumber : convertedInput);
     }
 
     private String divisibleConversion(int inputNumber) {
-        return DIVISION_CONVERTER_RULES.keySet()
+        return DIVISION_RULES.keySet()
                 .stream()
                 .filter(divisor -> inputNumber % divisor == 0)
-                .map(DIVISION_CONVERTER_RULES::get)
+                .map(DIVISION_RULES::get)
                 .collect(Collectors.joining());
     }
 
     private String containConversion(int inputNumber) {
-        String numberToString = String.valueOf(inputNumber);
-
-        return numberToString.chars()
-                .filter(x -> CONTAIN_CONVERTER_RULES.containsKey(getNumericValue(x)))
-                .mapToObj(x -> CONTAIN_CONVERTER_RULES.get(getNumericValue(x)))
+        return String.valueOf(inputNumber)
+                .chars()
+                .mapToObj(x -> CONTAIN_RULES.getOrDefault(getNumericValue(x), ""))
                 .collect(Collectors.joining());
     }
 }

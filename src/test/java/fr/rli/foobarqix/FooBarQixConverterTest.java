@@ -10,14 +10,9 @@ import java.util.stream.Stream;
 
 public class FooBarQixConverterTest {
 
-    private static FooBarQixConverter fbqConverter;
+    private FooBarQixConverter fooBarQixConverter = new FooBarQixConverter();;
 
-    @BeforeAll
-    static void setUp() {
-        fbqConverter = new FooBarQixConverter();
-    }
-
-    private static Stream<Arguments> provide_number_for_foobarqix_conversion() {
+    private static Stream<Arguments> provide_numbers_for_foobarqix_conversion() {
         return Stream.of(
                 Arguments.of(1, "1"), // No specific rule for conversion
                 Arguments.of(9, "Foo"), // Divisible by 3
@@ -34,8 +29,8 @@ public class FooBarQixConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provide_number_for_foobarqix_conversion")
-    public void should_apply_foobarqix_conversion_for_input_number(int input, String expected) {
-        Assertions.assertEquals(expected, fbqConverter.convert(input));
+    @MethodSource("provide_numbers_for_foobarqix_conversion")
+    public void should_apply_foobarqix_conversion_for_input_number(int inputNumber, String expected) {
+        Assertions.assertEquals(expected, fooBarQixConverter.convert(inputNumber));
     }
 }
